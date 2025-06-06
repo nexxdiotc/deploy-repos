@@ -12,6 +12,15 @@ on:
       environment:
         required: true
         type: string
+      repository:
+        required: true
+        type: string
+      commit_sha:
+        required: true
+        type: string
+      commit_url:
+        required: true
+        type: string
     secrets:
       SLACK_WEBHOOK_URL:
         required: true
@@ -25,14 +34,17 @@ jobs:
           STATUS: ${{ inputs.status }}
           IMAGE_URI: ${{ inputs.image_uri }}
           ENVIRONMENT: ${{ inputs.environment }}
+          REPOSITORY: ${{ inputs.repository }}
+          COMMIT_SHA: ${{ inputs.commit_sha }}
+          COMMIT_URL: ${{ inputs.commit_url }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           if [ "$STATUS" == "start" ]; then
-            TEXT="🚀 *Deploy to $ENVIRONMENT started* - Image: \`$IMAGE_URI\`"
+            TEXT="Repo \`$REPOSITORY\` deploy to $ENVIRONMENT started\nCommit: <$COMMIT_URL|$COMMIT_SHA>"
           elif [ "$STATUS" == "success" ]; then
-            TEXT="✅ *Deploy to $ENVIRONMENT successful* - Image: \`$IMAGE_URI\`"
+            TEXT="Repo \`$REPOSITORY\` deploy to $ENVIRONMENT successful\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nImage: \`$IMAGE_URI\`"
           else
-            TEXT="❌ *Deploy to $ENVIRONMENT failed* - Image: \`$IMAGE_URI\`"
+            TEXT="Repo \`$REPOSITORY\` deploy to $ENVIRONMENT failed\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nImage: \`$IMAGE_URI\`"
           fi
 
           curl -X POST -H 'Content-type: application/json' \
