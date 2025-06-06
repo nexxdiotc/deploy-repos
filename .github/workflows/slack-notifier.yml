@@ -21,6 +21,9 @@ on:
       commit_url:
         required: true
         type: string
+      commit_message:
+        required: false
+        type: string
     secrets:
       SLACK_WEBHOOK_URL:
         required: true
@@ -37,14 +40,15 @@ jobs:
           REPOSITORY: ${{ inputs.repository }}
           COMMIT_SHA: ${{ inputs.commit_sha }}
           COMMIT_URL: ${{ inputs.commit_url }}
+          COMMIT_MESSAGE: ${{ inputs.commit_message }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           if [ "$STATUS" == "start" ]; then
-            TEXT="Repo \`$REPOSITORY\` deploy to $ENVIRONMENT started\nCommit: <$COMMIT_URL|$COMMIT_SHA>"
+            TEXT="Repo \`$REPOSITORY\` deploy to *$ENVIRONMENT* started\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nMessage: \`$COMMIT_MESSAGE\`"
           elif [ "$STATUS" == "success" ]; then
-            TEXT="Repo \`$REPOSITORY\` deploy to $ENVIRONMENT successful\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nImage: \`$IMAGE_URI\`"
+            TEXT="Repo \`$REPOSITORY\` deploy to *$ENVIRONMENT* successful\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nMessage: \`$COMMIT_MESSAGE\`\nImage: \`$IMAGE_URI\`"
           else
-            TEXT="Repo \`$REPOSITORY\` deploy to $ENVIRONMENT failed\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nImage: \`$IMAGE_URI\`"
+            TEXT="Repo \`$REPOSITORY\` deploy to *$ENVIRONMENT* failed\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nMessage: \`$COMMIT_MESSAGE\`\nImage: \`$IMAGE_URI\`"
           fi
 
           curl -X POST -H 'Content-type: application/json' \
