@@ -1,0 +1,41 @@
+name: Slack Notifier
+
+on:
+  workflow_call:
+    inputs:
+      status:
+        required: true
+        type: string
+      image_uri:
+        required: false
+        type: string
+      environment:
+        required: true
+        type: string
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack Message
+        env:
+          STATUS: ${{ inputs.status }}
+          IMAGE_URI: ${{ inputs.image_uri }}
+          ENVIRONMENT: ${{ inputs.environment }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ "$STATUS" == "start" ]; then
+            TEXT="🚀 *Deploy to $ENVIRONMENT started* - Image: \`$IMAGE_URI\`"
+          elif [ "$STATUS" == "success" ]; then
+            TEXT="✅ *Deploy to $ENVIRONMENT successful* - Image: \`$IMAGE_URI\`"
+          else
+            TEXT="❌ *Deploy to $ENVIRONMENT failed* - Image: \`$IMAGE_URI\`"
+          fi
+
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\"$TEXT\"}" \
+            $SLACK_WEBHOOK_URL
+
