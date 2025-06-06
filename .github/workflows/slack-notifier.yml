@@ -44,11 +44,11 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           if [ "$STATUS" == "start" ]; then
-            TEXT="Repo \`$REPOSITORY\` deploy to *$ENVIRONMENT* started\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nMessage: \`$COMMIT_MESSAGE\`"
+            TEXT="🚧 \`$REPOSITORY\` deploy to *$ENVIRONMENT* started\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nMessage: \`$COMMIT_MESSAGE\`"
           elif [ "$STATUS" == "success" ]; then
-            TEXT="Repo \`$REPOSITORY\` deploy to *$ENVIRONMENT* successful\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nMessage: \`$COMMIT_MESSAGE\`\nImage: \`$IMAGE_URI\`"
+            TEXT="✅ \`$REPOSITORY\` deploy to *$ENVIRONMENT* successful\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nMessage: \`$COMMIT_MESSAGE\`\nImage: \`$IMAGE_URI\`"
           else
-            TEXT="Repo \`$REPOSITORY\` deploy to *$ENVIRONMENT* failed\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nMessage: \`$COMMIT_MESSAGE\`\nImage: \`$IMAGE_URI\`"
+            TEXT="❌ \`$REPOSITORY\` deploy to *$ENVIRONMENT* failed\nCommit: <$COMMIT_URL|$COMMIT_SHA>\nMessage: \`$COMMIT_MESSAGE\`\nImage: \`$IMAGE_URI\`"
           fi
 
           curl -X POST -H 'Content-type: application/json' \
